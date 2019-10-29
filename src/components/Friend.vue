@@ -1,6 +1,6 @@
 <template>
   <div class="friend">
-123
+1234
   </div>
 </template>
 <script>
