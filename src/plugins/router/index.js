@@ -8,28 +8,22 @@ const routes = [{
         redirect: '/home'
     }, {
         path: '/home',
-        redirect: '/home/msg'
+        redirect: '/home/contentHTML'
     },
     {
         path: '/home',
         component: () =>
             import ('../../views/Home.vue'),
         children: [{
-            name: 'friend',
-            path: 'friend',
-            component: () =>
-                import ('../../components/Friend.vue')
-        }, {
-            path: 'msg',
-            name: 'msg',
-            component: () =>
-                import ('../../components/Msg.vue')
-        }, {
-            path: 'setting',
-            name: 'setting',
-            component: () =>
-                import ('../../components/Setting.vue')
-        }]
+                name: 'contentHTML',
+                path: 'contentHTML',
+                component: () =>
+                    import ('../../components/ContentHTML.vue'),
+                props: (route) => ({ id: route.params.id, ...route.query })
+            }
+
+        ],
+        props: (route) => ({ id: route.params.id, ...route.query })
     },
     {
         path: '/login',

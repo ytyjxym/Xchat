@@ -10,9 +10,6 @@
 
 <script>
 // @ is an alias to /src
-import Msg from "../components/Msg";
-import Friend from "../components/Friend";
-import Setting from "../components/Setting";
 import Opt from "../components/Option";
 export default {
   name: "home",
@@ -24,9 +21,6 @@ export default {
   },
   components: {
     Opt,
-    Msg,
-    Friend,
-    Setting
   },
   beforeRouteEnter(to, from, next) {
     axios({

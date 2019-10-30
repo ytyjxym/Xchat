@@ -4,22 +4,29 @@
     <div class="opt__div--user" @click="showUser">
       <img :src="baseUrl + icon" />
     </div>
-    <div class="opt__div--msg text-center">
-      <router-link title='信息'
-        to="/home/msg"
-        active-class="opt__div--msg__a--active"
+    <div class="opt__div--msg text-center" @click="choseMsg">
+      <router-link
+        title="信息"
+        :to="{path:'/home/contentHTML',query:{name:'Msg'}}"
+        :active-class="select==='Msg' ?'opt__div--msg__a--active':''"
         class="iconfont icon-icon_replieslist"
       ></router-link>
     </div>
-    <div class="opt__div--friend text-center">
-      <router-link title='朋友'
-        to="/home/friend"
-        active-class="opt__div--friend__a--active"
+    <div class="opt__div--friend text-center" @click="choseFriend">
+      <router-link
+        title="朋友"
+        :to="{path:'/home/contentHTML',query:{name:'Friend'}}"
+        :active-class="select==='Friend' ?'opt__div--friend__a--active':''"
         class="iconfont icon-icon_meeting_fill"
       ></router-link>
     </div>
     <div class="opt__div--logout text-center">
-      <a title='退出登录' active-class="opt__div--logout__a--active" class="iconfont icon-icon_roundclose_fill" @click='logout'></a>
+      <a
+        title="退出登录"
+        active-class="opt__div--logout__a--active"
+        class="iconfont icon-icon_roundclose_fill"
+        @click="logout"
+      ></a>
     </div>
   </div>
 </template>
@@ -31,20 +38,25 @@ export default {
   props: ["icon", "name"],
   data() {
     return {
-      showUserInf: false
+      showUserInf: false,
+      select: "Msg"
     };
   },
   components: {},
   methods: {
     showUser() {},
+    choseMsg() {
+      this.select = "Msg";
+    },
+    choseFriend() {
+      this.select = "Friend";
+    },
     logout() {
       axios({
-        url:'api/logout'
-      })
-      .then(res=>{
-        console.log(res);
-        
-      })
+        url: "api/logout"
+      }).then(res => {
+        this.router.go("/home");
+      });
     }
   },
   mounted() {}
@@ -109,10 +121,10 @@ export default {
 }
 .opt .opt__div--msg .opt__div--msg__a--active {
   font-size: 30px;
-  color: rgb(44, 221, 44);
+  color: rgb(13, 165, 13);
 }
 .opt .opt__div--friend .opt__div--friend__a--active {
   font-size: 30px;
-  color: rgb(44, 221, 44);
+  color: rgb(13, 165, 13);
 }
 </style>

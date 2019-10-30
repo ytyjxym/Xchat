@@ -1,43 +1,76 @@
 <template>
-  <div class="msg .container">
-        <div class="col-3 msg__div--man">
-          
-        </div>
-        <div class="col-9 msg__div--talk">
-          
-        </div>
+  <div class="search .container">
+    <div class="search__div--keywords">
+      <input type="text" name="keywordInp" v-model="keywords" placeholder="搜索" />
+      <a href="javascript:;"></a>
+    </div>
   </div>
 </template>
 <script>
 // @ is an alias to /src
 
 export default {
-  name: "msg",
+  name: "search",
   // props: ["icon", "name"],
   data() {
     return {
-      showUserInf: false
+      keywords: ""
     };
   },
   components: {},
-  methods: {
-
-  },
+  methods: {},
   mounted() {}
 };
 </script>
 <style lang="scss" scoped>
-  .msg{
-    position:absolute;
-    left:70px;
-    top:0;
-    bottom:0;
-    right:0;
-    border-radius:0 4px 4px 0;
-    background:#eee;
-    display:flex;
-  }
-  .msg .msg__div--man{
-    background:#ccc;
-  }
+.search {
+  padding: 20px 15px;
+}
+.search .search__div--keywords {
+  display: flex;
+  justify-content: space-between;
+}
+.search .search__div--keywords a {
+  font-size: 20px;
+  width: 26px;
+  height: 26px;
+  color: #000;
+  text-decoration: none;
+  background: #ccc;
+  padding: 0 10px;
+  border-radius: 5px;
+  position: relative;
+}
+.search .search__div--keywords a:after {
+  content: "";
+  position: absolute;
+  height: 60%;
+  width: 1px;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background: #222;
+}
+.search .search__div--keywords a:before {
+  content: "";
+  position: absolute;
+  height: 1px;
+  width: 60%;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background: #222;
+}
+.search .search__div--keywords input {
+  border: 0;
+  border-radius: 4px;
+  flex: 0.9;
+  padding-left: 15px;
+  background-color: #ccc;
+}
+.search .search__div--keywords input:focus {
+  border: 1x solid #eee;
+  border-radius: 4px;
+  background-color: #fff;
+}
 </style>
