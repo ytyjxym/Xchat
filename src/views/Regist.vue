@@ -4,7 +4,18 @@
       <div class="text-center mb-4">
         <h1 class="h3 mb-3 font-weight-normal">注册</h1>
       </div>
-
+      <div class="regist__div--userPhoto text-center">
+        <label for="regist__div--userPhoto--file">
+          <img :src="userPhoto" width='100' height='100' v-show="userPhoto" style="border-radius:50%"/>
+          <span v-show="!userPhoto" style="cursor:pointer">点击上传头像</span>
+        </label>
+        <input
+          type="file"
+          id="regist__div--userPhoto--file"
+          style="display:none"
+          @input="choseUserPhoto"
+        />
+      </div>
       <div class="form-label-group">
         <label for="inputEmail">用户名</label>
         <input
@@ -34,7 +45,7 @@
         <label for="inputCheckPassword">请再输入一次密码</label>
         <input
           v-model="checkPassword"
-          type="checkPassword"
+          type="password"
           id="inputCheckPassword"
           class="form-control"
           placeholder="请再输入一次密码"
@@ -57,7 +68,7 @@
 
 <script>
 // @ is an alias to /src
-
+import fs from "fs";
 export default {
   name: "regist",
   data() {
@@ -65,24 +76,45 @@ export default {
       username: "",
       password: "",
       checkPassword: "",
-      msg: ""
+      msg: "",
+      userPhoto: "",
+      file:''
     };
   },
   components: {},
   methods: {
+    choseUserPhoto(e) { 
+      this.userPhoto = window.URL.createObjectURL(e.target.files[0]);
+      this.file = e.target.files[0];
+    },
     reg() {
-      let data = new URLSearchParams();
+      if (this.username.trim() === "") {
+        this.msg = "请输入用户名";
+        return;
+      }
+      if (this.password.trim() === "") {
+        this.msg = "请输入密码";
+        return;
+      }
+      if (this.password !== this.checkPassword) {
+        this.msg = "两次密码不一致";
+        return;
+      }
+      let data = new FormData();
       data.append("username", this.username);
       data.append("password", this.password);
+      data.append("icon", this.file);    
       axios({
         method: "post",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/json; charset=utf-8"
         },
         url: "/api/reg",
         data
       }).then(res => {
-        res.data.err === 0 ? this.$router.push('/home') : (this.msg = res.data.msg);
+        res.data.err === 0
+          ? this.$router.push("/home")
+          : (this.msg = res.data.msg);
       });
     }
   }
@@ -94,8 +126,8 @@ export default {
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  width: 380px;
-  height: 540px;
+  width: 450px;
+  height: 650px;
   background: #fff;
   border: 1px solid #eee;
   border-radius: 5px;

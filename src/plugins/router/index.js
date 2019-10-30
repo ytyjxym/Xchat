@@ -6,6 +6,9 @@ Vue.use(VueRouter)
 const routes = [{
         path: '/',
         redirect: '/home'
+    }, {
+        path: '/home',
+        redirect: '/home/msg'
     },
     {
         path: '/home',

@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/fonts/glyphicons-halflings-regular.ttf'
 import filters from './plugins/filters';
 import './plugins/axios'
+import './assets/css/font.css'
 Vue.config.productionTip = false;
 import baseUrl from './plugins/baseUrl'
 Vue.prototype.baseUrl = baseUrl.baseUrl;

@@ -1,7 +1,10 @@
 <template>
   <div class="home">
     <Opt v-if="icon" :icon="icon" :name="name"></Opt>
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+    <keep-alive>
+     <router-view></router-view>   
+    </keep-alive>
   </div>
 </template>
 
@@ -47,10 +50,10 @@ export default {
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  width: 60%;
-  height: 80%;
+  width: 1200px;
+  height: 800px;
   background: #fff;
-  border: 1px solid #eee;
-  border-radius: 5px;
+  // border: 1px solid #eee;
+  border-radius: 4px;
 }
 </style>

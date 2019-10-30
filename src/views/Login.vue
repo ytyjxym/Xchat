@@ -74,7 +74,18 @@ export default {
         res.data.err === 0 ? this.$router.push('/home') : this.msg = res.data.msg
       });
     }
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    axios({
+      url: "/api/loginTest"
+    }).then(res => {
+      if (res.data.err === 0) {
+        next('/home');
+      } else {
+        next();
+      }
+    });
+  }  
 };
 </script>
 <style lang="scss">
@@ -83,8 +94,8 @@ export default {
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  width: 380px;
-  height: 540px;
+  width: 450px;
+  height: 650px;
   background: #fff;
   border: 1px solid #eee;
   border-radius: 5px;

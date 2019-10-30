@@ -4,14 +4,22 @@
     <div class="opt__div--user" @click="showUser">
       <img :src="baseUrl + icon" />
     </div>
-    <div class="opt__div--msg" @click="showMsg">
-      <router-link to="/home/msg" active-class="opt__div--msg__a--active">信息</router-link>
+    <div class="opt__div--msg text-center">
+      <router-link title='信息'
+        to="/home/msg"
+        active-class="opt__div--msg__a--active"
+        class="iconfont icon-icon_replieslist"
+      ></router-link>
     </div>
-    <div class="opt__div--friend">
-      <router-link to="/home/friend" active-class="opt__div--friend__a--active">朋友</router-link>
+    <div class="opt__div--friend text-center">
+      <router-link title='朋友'
+        to="/home/friend"
+        active-class="opt__div--friend__a--active"
+        class="iconfont icon-icon_meeting_fill"
+      ></router-link>
     </div>
-    <div class="opt__div--setting">
-      <router-link to="/home/setting" active-class="opt__div--setting__a--active">设置</router-link>
+    <div class="opt__div--logout text-center">
+      <a title='退出登录' active-class="opt__div--logout__a--active" class="iconfont icon-icon_roundclose_fill" @click='logout'></a>
     </div>
   </div>
 </template>
@@ -29,7 +37,15 @@ export default {
   components: {},
   methods: {
     showUser() {},
-    showMsg() {}
+    logout() {
+      axios({
+        url:'api/logout'
+      })
+      .then(res=>{
+        console.log(res);
+        
+      })
+    }
   },
   mounted() {}
 };
@@ -42,27 +58,61 @@ export default {
   bottom: 0;
   width: 70px;
   background: #333;
+  border-radius: 4px 0 0 4px;
 }
 .opt .opt__div--user {
-  margin: 10px 0 0 10px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+.opt .opt__div--msg {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+.opt .opt__div--friend {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%);
   cursor: pointer;
 }
 .opt .opt__div--user img {
   width: 50px;
   height: 50px;
 }
-.opt .opt__div--msg {
+.opt .opt__div--logout {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.opt .opt__div--msg a {
+  font-size: 30px;
+  color: #aaa;
+  text-decoration: none;
+}
+.opt .opt__div--friend a {
+  font-size: 30px;
+  color: #aaa;
+  text-decoration: none;
+}
+.opt .opt__div--logout a {
+  font-size: 30px;
+  color: rgb(209, 46, 46);
+  text-decoration: none;
+  cursor: pointer;
 }
 .opt .opt__div--msg .opt__div--msg__a--active {
-  font-size: 18px;
-  color: #fff;
+  font-size: 30px;
+  color: rgb(44, 221, 44);
 }
 .opt .opt__div--friend .opt__div--friend__a--active {
-  font-size: 18px;
-  color: #fff;
-}
-.opt .opt__div--setting .opt__div--setting__a--active {
-  font-size: 18px;
-  color: #fff;
+  font-size: 30px;
+  color: rgb(44, 221, 44);
 }
 </style>
