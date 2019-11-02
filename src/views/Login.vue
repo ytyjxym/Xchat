@@ -99,7 +99,7 @@ export default {
   background: #fff;
   border: 1px solid #eee;
   border-radius: 5px;
-  padding: 50px 25px 0 25px;
+  padding: 30px 25px 0 25px;
   box-sizing: border-box;
 }
 </style>

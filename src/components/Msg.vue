@@ -1,103 +1,134 @@
 <template>
   <div class="msg .container">
-    <div class="msg__div--head">
-      <h3>123</h3>
+    <div class="col-3 content__div--left">
+      <div class="content__div--left--top">
+        <Search @SearchInf="getSearchInf"></Search>
+      </div>
+      <div class="content__div--left--bottom">
+        <Friend :name="name" :userList="userList"></Friend>
+      </div>
     </div>
-    <div class="msg__div--talk">
-      <ul>
-        <li class='clearfix'>
-          <div class="msg__div--talk__ul__li__div--photo">
-            <img src="/imgs/logo.png" width='40' height='40'>
-          </div>
-          <div class="msg__div--talk__ul__li__div--content">
-            <div class="msg__div--talk__ul__li__div--content__div--name">
-              Vue
+    <div class="col-9 content__div--right">
+      <div class="msg__div--head">
+        <h3>在线人数（{{userList.length}}人）</h3>
+      </div>
+      <div class="msg__div--talk" style="overflow:auto" ref="setScroll">
+        <ul>
+          <li class="clearfix" v-for="item of msgList" :key="item.key">
+            <div
+              :class="item.id === id ? 'msg__div--talk__ul__li__div--photo-right' :'msg__div--talk__ul__li__div--photo'"
+            >
+              <img :src="baseUrl + item.icon" width="40" height="40" />
             </div>
-            <div class="msg__div--talk__ul__li__div--content__div--msg">
-              你麻痹
+            <div
+              :class="item.id === id ? 'msg__div--talk__ul__li__div--content-right' :'msg__div--talk__ul__li__div--content'"
+            >
+              <div
+                :class="item.id === id ? 'msg__div--talk__ul__li__div--content__div--name-right' :'msg__div--talk__ul__li__div--content__div--name'"
+              >{{item.name}}</div>
+              <div
+                :class="item.id === id ? 'msg__div--talk__ul__li__div--content__div--msg-right' :'msg__div--talk__ul__li__div--content__div--msg'"
+              >{{item.msg}}</div>
             </div>
-          </div>
-        </li>
-                <li class='clearfix'>
-          <div class="msg__div--talk__ul__li__div--photo">
-            <img src="/imgs/logo.png" width='40' height='40'>
-          </div>
-          <div class="msg__div--talk__ul__li__div--content">
-            <div class="msg__div--talk__ul__li__div--content__div--name">
-              Vue
-            </div>
-            <div class="msg__div--talk__ul__li__div--content__div--msg">
-              你麻痹
-            </div>
-          </div>
-        </li>
-                <li class='clearfix'>
-          <div class="msg__div--talk__ul__li__div--photo">
-            <img src="/imgs/logo.png" width='40' height='40'>
-          </div>
-          <div class="msg__div--talk__ul__li__div--content">
-            <div class="msg__div--talk__ul__li__div--content__div--name">
-              Vue
-            </div>
-            <div class="msg__div--talk__ul__li__div--content__div--msg">
-              你麻痹
-            </div>
-          </div>
-        </li>
-                <li class='clearfix'>
-          <div class="msg__div--talk__ul__li__div--photo">
-            <img src="/imgs/logo.png" width='40' height='40'>
-          </div>
-          <div class="msg__div--talk__ul__li__div--content">
-            <div class="msg__div--talk__ul__li__div--content__div--name">
-              Vue
-            </div>
-            <div class="msg__div--talk__ul__li__div--content__div--msg">
-              <p>你麻痹asdasdasdasdasdasdasdsad</p>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="msg__div--send">
-      <textarea class="msg__div--send__textarea" v-model="sendMsg"></textarea>
-      <div class="msg__div--send--sendBtn" @click='sendToFriend'>发送(S)</div>
+          </li>
+        </ul>
+      </div>
+      <div class="msg__div--send">
+        <textarea
+          class="msg__div--send__textarea"
+          v-model="sendMsg"
+          @keydown.ctrl.enter.exact="sendToFriend"
+        ></textarea>
+        <div class="msg__div--send--sendBtn" @click="sendToFriend">发送</div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 // @ is an alias to /src
-
+import Friend from "./Friend";
+import Search from "./childComponents/Search";
 export default {
   name: "msg",
-  // props: ["icon", "name"],
+  props: ["friendId", "name", "icon", "id"],
   data() {
     return {
-      showUserInf: false,
       sendMsg: "",
-      list:[]
+      seach: "",
+      msgList: [],
+      userList: []
     };
   },
-  components: {},
-  methods: {
-    sendToFriend(){
-      axios({
-        url:'api/send',
-        params:{
-          friendName:'',
-          content:this.sendMsg
-        }
-      })
-      .then(res=>{
-        console.log(res);
-        
-      })
+  components: {
+    Search,
+    Friend
+  },
+  sockets: {
+    connect: function(data) {
+      console.log("已连接聊天室");
+    },
+    msg(data) {
+      data.key = this.msgList.length + 1;
+      this.msgList.push(data);
+      setTimeout(() => {
+        this.$refs.setScroll.scrollTop =
+          this.$refs.setScroll.scrollHeight -
+          this.$refs.setScroll.clientHeight;
+      }, 0);
+    },
+    user(userList) {
+      this.userList = userList;
+    },
+    disconnect() {
+      this.$socket.emit("delUser", id);
     }
   },
-  mounted() {}
+  methods: {
+    getSearchInf(data) {
+      this.seach = data;
+    },
+    sendToFriend(e) {
+      // this.$socket.on("news", data => {
+      //   console.log(data);
+      // });
+      // console.log(e.target.parentNode.parentNode.children[1].scrollTop);
+      // console.log(e.target.parentNode.parentNode.children[1].scrollHeight);
+      // console.log(e.target.parentNode.parentNode.children[1].clientHeight);
+      // console.log(e.target.parentNode.parentNode.children[1].children[0].clientHeight);
+
+      if (this.sendMsg) {
+        this.$socket.emit("msg", {
+          msg: this.sendMsg.trim(),
+          name: this.name,
+          icon: this.icon,
+          id: this.id
+        });
+      } else {
+        return false;
+      }
+      this.sendMsg = "";
+    }
+  },
+  created() {
+    this.$socket.emit("userLogin", {
+      name: this.name,
+      icon: this.icon,
+      id: this.id
+    });
+  }
 };
 </script>
 <style lang="scss" scoped>
+.content__div--left {
+  background: #ccc;
+  padding: 0;
+}
+.content__div--right {
+  padding: 0;
+}
+.content__div--left--top {
+  background: #ddd;
+}
 .msg {
   position: absolute;
   left: 0;
@@ -131,39 +162,85 @@ export default {
   top: 66px;
   left: 0;
   right: 0;
+  height: 494px;
   // background: #ccc;
 }
 .msg .msg__div--talk ul {
   list-style: none;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 .msg .msg__div--talk ul li {
-  display:block;
-  padding:15px
+  display: block;
+  padding: 15px;
 }
-.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--photo{
-  float:left;
+.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--photo {
+  float: left;
 }
-.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content{
-  float:left;
-  margin-left:10px;
+.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content {
+  float: left;
+  margin-left: 10px;
 }
-.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content .msg__div--talk__ul__li__div--content__div--name{
- font-size:16px;
- color:#999;
- line-height: 16px;
+.msg
+  .msg__div--talk
+  ul
+  li
+  .msg__div--talk__ul__li__div--content
+  .msg__div--talk__ul__li__div--content__div--name {
+  font-size: 16px;
+  color: #999;
+  line-height: 16px;
 }
-.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content .msg__div--talk__ul__li__div--content__div--msg{
-  background:#fff;
-  width:200px;
+.msg
+  .msg__div--talk
+  ul
+  li
+  .msg__div--talk__ul__li__div--content
+  .msg__div--talk__ul__li__div--content__div--msg {
+  background: #fff;
+  // width: 200px;
   border-radius: 5px;
   min-height: 25px;
-  padding:10px;
-  margin-top:10px;
+  padding: 10px;
+  margin-top: 10px;
   box-sizing: content-box;
 }
 
+//自己消息Style
+.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--photo-right {
+  float: right;
+}
+.msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content-right {
+  float: right;
+  margin-left: 10px;
+}
+.msg
+  .msg__div--talk
+  ul
+  li
+  .msg__div--talk__ul__li__div--content-right
+  .msg__div--talk__ul__li__div--content__div--name-right {
+  font-size: 16px;
+  color: #999;
+  line-height: 16px;
+  text-align: right;
+}
+.msg
+  .msg__div--talk
+  ul
+  li
+  .msg__div--talk__ul__li__div--content-right
+  .msg__div--talk__ul__li__div--content__div--msg-right {
+  background: #0ed30e;
+  // width: 200px;
+  border-radius: 5px;
+  min-height: 25px;
+  padding: 10px;
+  margin-top: 10px;
+  box-sizing: content-box;
+}
+
+//
 .msg .msg__div--send {
   position: absolute;
   bottom: 0;

@@ -1,7 +1,7 @@
 <template>
   <div class="search .container">
     <div class="search__div--keywords">
-      <input type="text" name="keywordInp" v-model="keywords" placeholder="搜索" />
+      <input type="text" name="keywordInp" v-model="keywords" placeholder="搜索" @input="search" />
       <a href="javascript:;"></a>
     </div>
   </div>
@@ -17,8 +17,22 @@ export default {
       keywords: ""
     };
   },
+  sockets: {
+    connect: function() {
+      console.log("socket connected");
+    },
+    customEmit: function(data) {
+      console.log(
+        'this method was fired by the socket server. eg: io.emit("customEmit", data)'
+      );
+    }
+  },
   components: {},
-  methods: {},
+  methods: {
+    search() {
+      this.$emit("SearchInf", this.keywords);
+    }
+  },
   mounted() {}
 };
 </script>

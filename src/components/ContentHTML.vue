@@ -1,35 +1,36 @@
 <template>
   <div class="content .container">
-    <div class="col-3 content__div--left">
-      <div class="content__div--left--top">
-        <Search></Search>
-      </div>
-      <div class="content__div--left--bottom">
-        <Friend></Friend>
-      </div>
-    </div>
-    <div class="col-9 content__div--right">
-      <component :is="name" ></component>
-    </div>
+<keep-alive>
+    <!-- <component :is="name"></component> -->
+    <router-view></router-view>
+</keep-alive>
   </div>
 </template>
 <script>
 // @ is an alias to /src
-import Friend from './Friend';
-import Search from './childComponents/Search';
-import Msg from './Msg';
+import Setting from "./Setting";
+import Msg from "./Msg";
 export default {
   name: "contentHTML",
-  props: ["name"],
+  props: {
+    name:{
+      type:String,
+    }
+  },
   data() {
     return {
-      showUserInf: false
+      friendId: ""
     };
   },
   components: {
-    Search,Msg,Friend
+    Msg,
+    Setting
   },
-  methods: {},
+  methods: {
+    // getFriendId(data) {
+    //   this.friendId = data;
+    // }
+  },
   mounted() {}
 };
 </script>
@@ -44,14 +45,5 @@ export default {
   background: #eee;
   display: flex;
 }
-.content .content__div--left {
-  background: #ccc;
-  padding:0;
-}
-.content .content__div--right {
-  padding:0;
-}
-.content__div--left--top{
-  background:#ddd
-}
+
 </style>

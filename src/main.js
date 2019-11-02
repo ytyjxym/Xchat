@@ -6,13 +6,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import filters from './plugins/filters';
 import './plugins/axios'
 import './assets/css/font.css'
+import './plugins/socket.io'
 Vue.config.productionTip = false;
 import baseUrl from './plugins/baseUrl'
 Vue.prototype.baseUrl = baseUrl.baseUrl;
 for (let key in filters) {
     Vue.filter(key, filters[key]);
 };
-
 new Vue({
     router,
     render: h => h(App)

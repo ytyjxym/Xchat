@@ -1,10 +1,11 @@
 <template>
   <div class="home">
-    <Opt v-if="icon" :icon="icon" :name="name"></Opt>
-    <!-- <router-view></router-view> -->
     <keep-alive>
-     <router-view></router-view>   
+      <Opt v-if="icon" :icon="icon" :name="name" :id='id'></Opt>
     </keep-alive>
+
+    <!-- <router-view></router-view> -->
+    <router-view></router-view>
   </div>
 </template>
 
@@ -16,20 +17,22 @@ export default {
   data() {
     return {
       name: "",
-      icon: ""
+      icon: "",
+      id:''
     };
   },
   components: {
-    Opt,
+    Opt
   },
   beforeRouteEnter(to, from, next) {
     axios({
       url: "/api/loginTest"
     }).then(res => {
-      if (res.data.err === 0) {
+      if (res.data.err === 0) {       
         next(_this => {
           _this.name = res.data.data.name;
           _this.icon = res.data.data.icon;
+          _this.id = res.data.data._id;
         });
       } else {
         next("/login");

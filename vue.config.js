@@ -6,7 +6,8 @@ module.exports = {
                 ws: true,
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/home': ''
+                    // '^/home': '',
+                    '^/home/contentHTML': ''
                 }
             }
         }

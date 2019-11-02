@@ -6,7 +6,13 @@
       </div>
       <div class="regist__div--userPhoto text-center">
         <label for="regist__div--userPhoto--file">
-          <img :src="userPhoto" width='100' height='100' v-show="userPhoto" style="border-radius:50%"/>
+          <img
+            :src="userPhoto"
+            width="60"
+            height="60"
+            v-show="userPhoto"
+            style="border-radius:50%"
+          />
           <span v-show="!userPhoto" style="cursor:pointer">点击上传头像</span>
         </label>
         <input
@@ -14,6 +20,18 @@
           id="regist__div--userPhoto--file"
           style="display:none"
           @input="choseUserPhoto"
+        />
+      </div>
+      <div class="form-label-group">
+        <label for="inputEmail">昵称</label>
+        <input
+          v-model="name"
+          type="name"
+          id="inputName"
+          class="form-control"
+          placeholder="请输入昵称"
+          required
+          autofocus
         />
       </div>
       <div class="form-label-group">
@@ -73,21 +91,26 @@ export default {
   name: "regist",
   data() {
     return {
+      name: "",
       username: "",
       password: "",
       checkPassword: "",
       msg: "",
       userPhoto: "",
-      file:''
+      file: ""
     };
   },
   components: {},
   methods: {
-    choseUserPhoto(e) { 
+    choseUserPhoto(e) {
       this.userPhoto = window.URL.createObjectURL(e.target.files[0]);
       this.file = e.target.files[0];
     },
     reg() {
+      if (this.name.trim() === "") {
+        this.msg = "请输入昵称";
+        return;
+      }
       if (this.username.trim() === "") {
         this.msg = "请输入用户名";
         return;
@@ -101,13 +124,14 @@ export default {
         return;
       }
       let data = new FormData();
+      data.append("name",this.name)
       data.append("username", this.username);
       data.append("password", this.password);
-      data.append("icon", this.file);    
+      data.append("icon", this.file);
       axios({
         method: "post",
         headers: {
-          "Content-Type": "application/json; charset=utf-8"
+          "Content-Type": "multipart/form-data; charset=utf-8"
         },
         url: "/api/reg",
         data
@@ -131,7 +155,7 @@ export default {
   background: #fff;
   border: 1px solid #eee;
   border-radius: 5px;
-  padding: 50px 25px 0 25px;
+  padding: 30px 25px 0 25px;
   box-sizing: border-box;
 }
 </style>

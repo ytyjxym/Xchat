@@ -2,22 +2,22 @@
   <div class="opt">
     <div class="opt__div--userInf" v-if="showUserInf"></div>
     <div class="opt__div--user" @click="showUser">
-      <img :src="baseUrl + icon" />
+      <img :src="baseUrl + icon" style="border-radius:50%;" />
     </div>
     <div class="opt__div--msg text-center" @click="choseMsg">
       <router-link
         title="信息"
-        :to="{path:'/home/contentHTML',query:{name:'Msg'}}"
         :active-class="select==='Msg' ?'opt__div--msg__a--active':''"
+        :to="{path:'/home/contentHTML/Msg',query:{name,icon,id}}"
         class="iconfont icon-icon_replieslist"
       ></router-link>
     </div>
-    <div class="opt__div--friend text-center" @click="choseFriend">
+    <div class="opt__div--friend text-center" @click="choseSetting">
       <router-link
-        title="朋友"
-        :to="{path:'/home/contentHTML',query:{name:'Friend'}}"
-        :active-class="select==='Friend' ?'opt__div--friend__a--active':''"
-        class="iconfont icon-icon_meeting_fill"
+        title="设置"
+        :active-class="select==='Setting' ?'opt__div--friend__a--active':''"
+        :to="{path:'/home/contentHTML/Setting',query:{oldIcon:icon,id}}"
+        class="iconfont icon-icon_setting_fill"
       ></router-link>
     </div>
     <div class="opt__div--logout text-center">
@@ -35,31 +35,35 @@
 
 export default {
   name: "opt",
-  props: ["icon", "name"],
+  props: ["icon", "name","id"],
   data() {
     return {
       showUserInf: false,
-      select: "Msg"
+      select: ""
     };
   },
   components: {},
   methods: {
-    showUser() {},
+    showUser() {
+      this.showUserInf = !this.showUserInf;
+    },
     choseMsg() {
       this.select = "Msg";
     },
-    choseFriend() {
-      this.select = "Friend";
+    choseSetting() {
+      this.select = "Setting";
     },
     logout() {
       axios({
         url: "api/logout"
       }).then(res => {
-        this.router.go("/home");
+        this.$router.go("/home");
       });
     }
   },
-  mounted() {}
+  mounted() {
+    this.$route.path.includes('Setting') ? this.select = "Setting" : this.select = "Msg" 
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -77,6 +81,7 @@ export default {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
+
   cursor: pointer;
 }
 .opt .opt__div--msg {
@@ -123,6 +128,10 @@ export default {
   font-size: 30px;
   color: rgb(13, 165, 13);
 }
+// .opt .opt__div--msg .opt__div--msg__a--notactive {
+//   font-size: 30px;
+//   color: #aaa;
+// }
 .opt .opt__div--friend .opt__div--friend__a--active {
   font-size: 30px;
   color: rgb(13, 165, 13);
