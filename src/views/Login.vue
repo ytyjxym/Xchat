@@ -1,12 +1,12 @@
 <template>
   <div class="login">
-    <form class="form-signin">
+    <form class="form-signin login__form">
       <div class="text-center mb-4">
         <h1 class="h3 mb-3 font-weight-normal">登录</h1>
       </div>
 
       <div class="form-label-group">
-        <label for="inputEmail">用户名</label>
+        <label for="inputUsername">用户名</label>
         <input
           v-model="username"
           type="username"
@@ -17,7 +17,7 @@
           autofocus
         />
       </div>
-
+      
       <div class="form-label-group">
         <label for="inputPassword">密码</label>
         <input
@@ -30,17 +30,15 @@
         />
       </div>
       <div class="checkbox mb-3">
-        <label>
-          {{msg}}
-        </label>
+        <label>{{msg}}</label>
       </div>
 
       <div class="checkbox mb-3">
         <label>
-          <router-link to="/regist">注册</router-link>
+          <router-link to="/regist" style="color:rgb(13, 165, 13)">注册</router-link>
         </label>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="button" @click="login">登录</button>
+      <button class="btn btn-lg btn-success btn-block" type="button" @click="login">登录</button>
     </form>
   </div>
 </template>
@@ -54,7 +52,7 @@ export default {
     return {
       username: "",
       password: "",
-      msg:''
+      msg: ""
     };
   },
   components: {},
@@ -71,7 +69,9 @@ export default {
         url: "/api/login",
         data
       }).then(res => {
-        res.data.err === 0 ? this.$router.push('/home') : this.msg = res.data.msg
+        res.data.err === 0
+          ? this.$router.push("/home")
+          : (this.msg = res.data.msg);
       });
     }
   },
@@ -80,16 +80,16 @@ export default {
       url: "/api/loginTest"
     }).then(res => {
       if (res.data.err === 0) {
-        next('/home');
+        next("/home");
       } else {
         next();
       }
     });
-  }  
+  }
 };
 </script>
 <style lang="scss">
-.login form {
+.login .login__form {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -101,5 +101,6 @@ export default {
   border-radius: 5px;
   padding: 30px 25px 0 25px;
   box-sizing: border-box;
+  box-shadow: 1px 1px 20px;
 }
 </style>

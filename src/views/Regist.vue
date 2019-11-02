@@ -1,18 +1,12 @@
 <template>
   <div class="regist">
-    <form class="form-signin">
+    <form class="form-signin regist__form">
       <div class="text-center mb-4">
         <h1 class="h3 mb-3 font-weight-normal">注册</h1>
       </div>
       <div class="regist__div--userPhoto text-center">
         <label for="regist__div--userPhoto--file">
-          <img
-            :src="userPhoto"
-            width="60"
-            height="60"
-            v-show="userPhoto"
-            style="border-radius:50%"
-          />
+          <img :src="userPhoto" width="60" height="60" v-show="userPhoto" style="border-radius:50%" />
           <span v-show="!userPhoto" style="cursor:pointer">点击上传头像</span>
         </label>
         <input
@@ -76,10 +70,10 @@
 
       <div class="checkbox mb-3">
         <label>
-          <router-link to="/login">登录</router-link>
+          <router-link to="/login" style="color:rgb(13, 165, 13)">登录</router-link>
         </label>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="button" @click="reg">注册</button>
+      <button class="btn btn-lg btn-success btn-block" type="button" @click="reg">注册</button>
     </form>
   </div>
 </template>
@@ -124,7 +118,7 @@ export default {
         return;
       }
       let data = new FormData();
-      data.append("name",this.name)
+      data.append("name", this.name);
       data.append("username", this.username);
       data.append("password", this.password);
       data.append("icon", this.file);
@@ -145,7 +139,7 @@ export default {
 };
 </script>
 <style lang="scss">
-.regist form {
+.regist .regist__form {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -157,5 +151,6 @@ export default {
   border-radius: 5px;
   padding: 30px 25px 0 25px;
   box-sizing: border-box;
+  box-shadow: 1px 1px 20px;
 }
 </style>

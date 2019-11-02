@@ -6,7 +6,7 @@
       </div>
       <div class="regist__div--userPhoto text-center">
         <label for="regist__div--userPhoto--file">
-          <img :src="userPhoto ? userPhoto : (baseUrl + oldIcon)" width="60" height="60" style="border-radius:50%" v-if='oldIcon' />
+          <img :src="userPhoto ? userPhoto : (baseUrl + oldIcon)" width="60" height="60" style="border-radius:50%;cursor:pointer" v-if='oldIcon' />
         </label>
         <input
           type="file"
@@ -63,7 +63,7 @@
       <div class="checkbox mb-3">
         <label>{{msg}}</label>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="button" @click="reset">提交</button>
+      <button class="btn btn-lg btn-success btn-block" type="button" @click="reset">提交</button>
     </form>
   </div>
 </template>

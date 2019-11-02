@@ -10,6 +10,7 @@
         :active-class="select==='Msg' ?'opt__div--msg__a--active':''"
         :to="{path:'/home/contentHTML/Msg',query:{name,icon,id}}"
         class="iconfont icon-icon_replieslist"
+        ref="default"
       ></router-link>
     </div>
     <div class="opt__div--friend text-center" @click="choseSetting">
@@ -35,7 +36,7 @@
 
 export default {
   name: "opt",
-  props: ["icon", "name","id"],
+  props: ["icon", "name", "id"],
   data() {
     return {
       showUserInf: false,
@@ -62,7 +63,7 @@ export default {
     }
   },
   mounted() {
-    this.$route.path.includes('Setting') ? this.select = "Setting" : this.select = "Msg" 
+    this.$refs.default.$el.click();
   }
 };
 </script>

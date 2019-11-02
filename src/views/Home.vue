@@ -52,5 +52,6 @@ export default {
   background: #fff;
   // border: 1px solid #eee;
   border-radius: 4px;
+    box-shadow: 1px 1px 20px;
 }
 </style>
