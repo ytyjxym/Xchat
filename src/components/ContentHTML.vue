@@ -8,6 +8,7 @@
 </template>
 <script>
 // @ is an alias to /src
+import store from "../plugins/store";
 import Setting from "./Setting";
 import Msg from "./Msg";
 export default {
@@ -30,6 +31,28 @@ export default {
     // getFriendId(data) {
     //   this.friendId = data;
     // }
+  },
+    beforeRouteEnter(to, from, next) {
+    if (store.state.own.err === 0) {
+      next();
+    } else {
+      next("/login");
+    }
+    // axios({
+    //   url: "/api/loginTest"
+    // }).then(res => {
+    //   // if (res.data.err === 0) {
+    //   if (store.state.own.err === 0) {
+    //     next();
+    //     // next(_this => {
+    //     //   _this.name = res.data.data.name;
+    //     //   _this.icon = res.data.data.icon;
+    //     //   _this.id = res.data.data._id;
+    //     // });
+    //   } else {
+    //     next("/login");
+    //   }
+    // });
   },
   mounted() {}
 };

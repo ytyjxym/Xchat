@@ -117,23 +117,32 @@ export default {
         this.msg = "两次密码不一致";
         return;
       }
-      let data = new FormData();
-      data.append("name", this.name);
-      data.append("username", this.username);
-      data.append("password", this.password);
-      data.append("icon", this.file);
-      axios({
-        method: "post",
-        headers: {
-          "Content-Type": "multipart/form-data; charset=utf-8"
-        },
-        url: "/api/reg",
-        data
-      }).then(res => {
-        res.data.err === 0
-          ? this.$router.push("/home")
-          : (this.msg = res.data.msg);
-      });
+      this.$store.dispatch("REG", {
+          name: this.name,
+          username: this.username,
+          password: this.password,
+          file: this.file
+        })
+        .then(res => {
+          res.err === 0 ? this.$router.push("/home") : (this.msg = res.msg);
+        });
+      // let data = new FormData();
+      // data.append("name", this.name);
+      // data.append("username", this.username);
+      // data.append("password", this.password);
+      // data.append("icon", this.file);
+      // axios({
+      //   method: "post",
+      //   headers: {
+      //     "Content-Type": "multipart/form-data; charset=utf-8"
+      //   },
+      //   url: "/api/reg",
+      //   data
+      // }).then(res => {
+      //   res.data.err === 0
+      //     ? this.$router.push("/home")
+      //     : (this.msg = res.data.msg);
+      // });
     }
   }
 };

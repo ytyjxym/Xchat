@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <keep-alive>
-      <Opt v-if="icon" :icon="icon" :name="name" :id='id'></Opt>
+      <!-- <Opt v-if="icon" :icon="icon" :name="name" :id="id"></Opt> -->
+      <Opt></Opt>
     </keep-alive>
 
     <!-- <router-view></router-view> -->
@@ -12,32 +13,36 @@
 <script>
 // @ is an alias to /src
 import Opt from "../components/Option";
+import store from "../plugins/store";
 export default {
   name: "home",
   data() {
-    return {
-      name: "",
-      icon: "",
-      id:''
-    };
+    return{}
   },
   components: {
     Opt
   },
   beforeRouteEnter(to, from, next) {
-    axios({
-      url: "/api/loginTest"
-    }).then(res => {
-      if (res.data.err === 0) {       
-        next(_this => {
-          _this.name = res.data.data.name;
-          _this.icon = res.data.data.icon;
-          _this.id = res.data.data._id;
-        });
-      } else {
-        next("/login");
-      }
-    });
+    if (store.state.own.err === 0) {
+      next();
+    } else {
+      next("/login");
+    }
+    // axios({
+    //   url: "/api/loginTest"
+    // }).then(res => {
+    //   // if (res.data.err === 0) {
+    //   if (store.state.own.err === 0) {
+    //     next();
+    //     // next(_this => {
+    //     //   _this.name = res.data.data.name;
+    //     //   _this.icon = res.data.data.icon;
+    //     //   _this.id = res.data.data._id;
+    //     // });
+    //   } else {
+    //     next("/login");
+    //   }
+    // });
   }
 };
 </script>
@@ -52,6 +57,6 @@ export default {
   background: #fff;
   // border: 1px solid #eee;
   border-radius: 4px;
-    box-shadow: 1px 1px 20px;
+  box-shadow: 1px 1px 20px;
 }
 </style>

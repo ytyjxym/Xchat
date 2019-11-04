@@ -17,7 +17,7 @@
           autofocus
         />
       </div>
-      
+
       <div class="form-label-group">
         <label for="inputPassword">密码</label>
         <input
@@ -45,7 +45,7 @@
 
 <script>
 // @ is an alias to /src
-
+import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 export default {
   name: "login",
   data() {
@@ -58,21 +58,14 @@ export default {
   components: {},
   methods: {
     login() {
-      let data = new URLSearchParams();
-      data.append("username", this.username);
-      data.append("password", this.password);
-      axios({
-        method: "post",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        url: "/api/login",
-        data
-      }).then(res => {
-        res.data.err === 0
-          ? this.$router.push("/home")
-          : (this.msg = res.data.msg);
-      });
+      this.$store
+        .dispatch("LOGIN", {
+          username: this.username,
+          password: this.password
+        })
+        .then(res => {
+          res.err === 0 ? this.$router.push("/home") : (this.msg = res.msg);
+        });
     }
   },
   beforeRouteEnter(to, from, next) {

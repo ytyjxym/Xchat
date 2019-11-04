@@ -6,7 +6,12 @@
       </div>
       <div class="regist__div--userPhoto text-center">
         <label for="regist__div--userPhoto--file">
-          <img :src="userPhoto ? userPhoto : (baseUrl + oldIcon)" width="60" height="60" style="border-radius:50%;cursor:pointer" v-if='oldIcon' />
+          <img
+            :src="userPhoto ? userPhoto : (baseUrl + own.data.icon)"
+            width="60"
+            height="60"
+            style="border-radius:50%;cursor:pointer"
+          />
         </label>
         <input
           type="file"
@@ -69,11 +74,12 @@
 </template>
 <script>
 // @ is an alias to /src
-
+import { mapState } from "vuex";
+import store from "../plugins/store";
 export default {
   name: "Setting",
   // props: ["friendId", "name", "list"],
-    props: ['oldIcon'],
+  // props: ["oldIcon"],
   data() {
     return {
       name: "",
@@ -87,34 +93,76 @@ export default {
     };
   },
   components: {},
+  computed: mapState(["own"]),
   methods: {
     reset() {
       if (this.newPassword !== this.checkNewPassword) {
         this.msg = "两次密码不一致";
         return;
       }
-      let data = new FormData();
-      data.append("newName", this.name);
-      data.append("oldPassword", this.oldPassword);
-      data.append("newPassword", this.newPassword);
-      data.append("icon", this.file);
-      axios({
-        url: "/api/setUser",
-        method: "post",
-        data
-      }).then(res => {
-        this.msg = res.data.msg;
-        if (res.data.err === 0) {
-          setTimeout(() => {
-            this.$router.go("/home");
-          }, 500);
-        }
-      });
+      this.$store
+        .dispatch("RESET", {
+          name: this.name,
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
+          file: this.file
+        })
+        .then(res => {
+          this.msg = res.msg;
+          if (res.err === 0) {
+            this.name = "";
+            this.username = "";
+            this.oldPassword = "";
+            this.newPassword = "";
+            this.checkNewPassword = "";
+          }
+        });
+
+      // let data = new FormData();
+      // data.append("newName", this.name);
+      // data.append("oldPassword", this.oldPassword);
+      // data.append("newPassword", this.newPassword);
+      // data.append("icon", this.file);
+      // axios({
+      //   url: "/api/setUser",
+      //   method: "post",
+      //   data
+      // }).then(res => {
+      //   this.msg = res.data.msg;
+      //   if (res.data.err === 0) {
+      //     setTimeout(() => {
+      //       this.$router.go("/home");
+      //     }, 500);
+      //   }
+      // });
     },
+
     choseUserPhoto(e) {
       this.userPhoto = window.URL.createObjectURL(e.target.files[0]);
       this.file = e.target.files[0];
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (store.state.own.err === 0) {
+      next();
+    } else {
+      next("/login");
+    }
+    // axios({
+    //   url: "/api/loginTest"
+    // }).then(res => {
+    //   // if (res.data.err === 0) {
+    //   if (store.state.own.err === 0) {
+    //     next();
+    //     // next(_this => {
+    //     //   _this.name = res.data.data.name;
+    //     //   _this.icon = res.data.data.icon;
+    //     //   _this.id = res.data.data._id;
+    //     // });
+    //   } else {
+    //     next("/login");
+    //   }
+    // });
   },
   mounted() {}
 };

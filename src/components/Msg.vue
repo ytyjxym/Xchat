@@ -5,7 +5,7 @@
         <Search @SearchInf="getSearchInf"></Search>
       </div>
       <div class="content__div--left--bottom">
-        <Friend :name="name" :userList="userList"></Friend>
+        <Friend :name="own.data.name" :userList="userList"></Friend>
       </div>
     </div>
     <div class="col-9 content__div--right">
@@ -16,18 +16,18 @@
         <ul>
           <li class="clearfix" v-for="item of msgList" :key="item.key">
             <div
-              :class="item.id === id ? 'msg__div--talk__ul__li__div--photo-right' :'msg__div--talk__ul__li__div--photo'"
+              :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--photo-right' :'msg__div--talk__ul__li__div--photo'"
             >
               <img :src="baseUrl + item.icon" width="40" height="40" />
             </div>
             <div
-              :class="item.id === id ? 'msg__div--talk__ul__li__div--content-right' :'msg__div--talk__ul__li__div--content'"
+              :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content-right' :'msg__div--talk__ul__li__div--content'"
             >
               <div
-                :class="item.id === id ? 'msg__div--talk__ul__li__div--content__div--name-right' :'msg__div--talk__ul__li__div--content__div--name'"
+                :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content__div--name-right' :'msg__div--talk__ul__li__div--content__div--name'"
               >{{item.name}}</div>
               <div
-                :class="item.id === id ? 'msg__div--talk__ul__li__div--content__div--msg-right' :'msg__div--talk__ul__li__div--content__div--msg'"
+                :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content__div--msg-right' :'msg__div--talk__ul__li__div--content__div--msg'"
               >{{item.msg}}</div>
             </div>
           </li>
@@ -46,11 +46,13 @@
 </template>
 <script>
 // @ is an alias to /src
+import { mapState } from "vuex";
+import store from "../plugins/store";
 import Friend from "./Friend";
 import Search from "./childComponents/Search";
 export default {
   name: "msg",
-  props: ["friendId", "name", "icon", "id"],
+  // props: ["friendId", "name", "icon", "id"],
   data() {
     return {
       sendMsg: "",
@@ -63,6 +65,9 @@ export default {
     Search,
     Friend
   },
+  // computed: mapState(["own",'msgList','userList']),
+  computed: mapState(["own"]),
+
   sockets: {
     connect: function(data) {
       console.log("已连接聊天室");
@@ -72,15 +77,18 @@ export default {
       this.msgList.push(data);
       setTimeout(() => {
         this.$refs.setScroll.scrollTop =
-          this.$refs.setScroll.scrollHeight -
-          this.$refs.setScroll.clientHeight;
+          this.$refs.setScroll.scrollHeight - this.$refs.setScroll.clientHeight;
       }, 0);
     },
     user(userList) {
       this.userList = userList;
     },
     disconnect() {
-      this.$socket.emit("delUser", id);
+      this.$socket.emit("delUser", this.own.data._id);
+    },
+    userEnter(data){
+      console.log(data);
+      
     }
   },
   methods: {
@@ -99,9 +107,9 @@ export default {
       if (this.sendMsg) {
         this.$socket.emit("msg", {
           msg: this.sendMsg.trim(),
-          name: this.name,
-          icon: this.icon,
-          id: this.id
+          name: this.own.data.name,
+          icon: this.own.data.icon,
+          id: this.own.data._id
         });
       } else {
         return false;
@@ -109,11 +117,41 @@ export default {
       this.sendMsg = "";
     }
   },
+  beforeRouteEnter(to, from, next) {
+    if (store.state.own.err === 0) {
+      next();
+    } else {
+      next("/login");
+    }
+    // axios({
+    //   url: "/api/loginTest"
+    // }).then(res => {
+    //   // if (res.data.err === 0) {
+    //   if (store.state.own.err === 0) {
+    //     next();
+    //     // next(_this => {
+    //     //   _this.name = res.data.data.name;
+    //     //   _this.icon = res.data.data.icon;
+    //     //   _this.id = res.data.data._id;
+    //     // });
+    //   } else {
+    //     next("/login");
+    //   }
+    // });
+  },
+  activated() {
+    
+    this.$socket.emit("userLogin", {
+      name: this.own.data.name,
+      icon: this.own.data.icon,
+      id: this.own.data._id
+    });
+  },
   created() {
     this.$socket.emit("userLogin", {
-      name: this.name,
-      icon: this.icon,
-      id: this.id
+      name: this.own.data.name,
+      icon: this.own.data.icon,
+      id: this.own.data._id
     });
   }
 };

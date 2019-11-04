@@ -2,13 +2,13 @@
   <div class="opt">
     <div class="opt__div--userInf" v-if="showUserInf"></div>
     <div class="opt__div--user" @click="showUser">
-      <img :src="baseUrl + icon" style="border-radius:50%;" />
+      <img :src="baseUrl + own.data.icon" style="border-radius:50%;" />
     </div>
     <div class="opt__div--msg text-center" @click="choseMsg">
       <router-link
         title="信息"
         :active-class="select==='Msg' ?'opt__div--msg__a--active':''"
-        :to="{path:'/home/contentHTML/Msg',query:{name,icon,id}}"
+        :to="{path:'/home/contentHTML/Msg',parmas:{name:own.data.name,icon:own.data.icon,id:own.data._id}}"
         class="iconfont icon-icon_replieslist"
         ref="default"
       ></router-link>
@@ -17,7 +17,7 @@
       <router-link
         title="设置"
         :active-class="select==='Setting' ?'opt__div--friend__a--active':''"
-        :to="{path:'/home/contentHTML/Setting',query:{oldIcon:icon,id}}"
+        :to="{path:'/home/contentHTML/Setting'}"
         class="iconfont icon-icon_setting_fill"
       ></router-link>
     </div>
@@ -33,17 +33,20 @@
 </template>
 <script>
 // @ is an alias to /src
+import {mapState} from 'vuex'
 
 export default {
   name: "opt",
-  props: ["icon", "name", "id"],
+  // props: ["icon", "name", "id"],
   data() {
     return {
       showUserInf: false,
       select: ""
     };
   },
+  
   components: {},
+  computed:mapState(['own']),
   methods: {
     showUser() {
       this.showUserInf = !this.showUserInf;
@@ -57,8 +60,9 @@ export default {
     logout() {
       axios({
         url: "api/logout"
-      }).then(res => {
-        this.$router.go("/home");
+      }).then(res => {       
+        window.localStorage.removeItem('xChat__own')
+        this.$router.push("/login");
       });
     }
   },

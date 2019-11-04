@@ -23,24 +23,24 @@ const routes = [{
                 path: 'contentHTML',
                 component: () =>
                     import ('../../components/ContentHTML.vue'),
-                props: (route) => ({ id: route.params.id, ...route.query }),
+                props: (route) => ({...route.params, ...route.query }),
                 children: [{
                     name: 'msg',
                     path: 'msg',
                     component: () =>
                         import ('../../components/Msg.vue'),
-                    props: (route) => ({ id: route.params.id, ...route.query })
+                    props: (route) => ({...route.params, ...route.query })
                 }, {
                     name: 'setting',
                     path: 'setting',
                     component: () =>
                         import ('../../components/Setting.vue'),
-                    props: (route) => ({ id: route.params.id, ...route.query })
+                    props: (route) => ({...route.params, ...route.query })
                 }]
             }
 
         ],
-        props: (route) => ({ id: route.params.id, ...route.query })
+        props: (route) => ({...route.params, ...route.query })
     },
     {
         path: '/login',
