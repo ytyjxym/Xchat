@@ -4,5 +4,9 @@ export default {
     own: {
 
     },
-    loginMsg: {}
+    loginMsg: {},
+    multi: true,
+    selectFriend: null,
+    view_userEnter: '',
+    alertMsg: '',
 }

@@ -15,8 +15,32 @@
         <ul>
           <li
             class="clearfix"
-            @click="sendFriendId(item.id)"
-            v-for="(item,index) of userList"
+            @click="toMultiChat()"
+            :key="'multiChat'"
+            style="border-bottom:1px solid #bbb"
+          >
+            <div class="friend__div--talk__ul__li__div--photo">
+              <!-- <img :src="baseUrl + item.icon" width="40" height="40" /> -->
+              <span
+                class="iconfont icon-cooperate"
+                style="font-size:30px;color:rgb(250, 173, 20);padding-left:6px;"
+              ></span>
+            </div>
+            <div class="friend__div--talk__ul__li__div--content">
+              <div
+                class="friend__div--talk__ul__li__div--content__div--name"
+                style="line-height:30px;"
+              >多人聊天</div>
+            </div>
+          </li>
+          <li class="friend__div--talk__ul__li--normal">
+            <span>在线用户</span>
+          </li>
+          <li
+            class="clearfix"
+            @click="toSingalChat(item.id)"
+            v-for="item of userList"
+            v-show='search ? item.name.includes(search) : true'
             :key="item.id"
           >
             <div class="friend__div--talk__ul__li__div--photo">
@@ -37,13 +61,16 @@
 
 export default {
   name: "friend",
-  props: ["name", "userList"],
+  props: ["name", "userList",'search'],
   data() {
     return {};
   },
   components: {},
   methods: {
-    sendFriendId() {
+    toMultiChat() {
+      this.$store.commit('TO_MULTI_CHAT')
+    },
+    toSingalChat() {
       this.$emit("getFriend", Math.random());
     }
   },
@@ -82,6 +109,16 @@ export default {
 .friend .friend__div--talk ul li .friend__div--talk__ul__li__div--content {
   float: left;
   margin-left: 10px;
+}
+.friend .friend__div--talk ul li.friend__div--talk__ul__li--normal {
+  cursor:auto;
+  border-bottom:1px solid #bbb;
+  font-size:14px;
+  color:#666;
+  padding-left:18px;
+}
+.friend .friend__div--talk ul li.friend__div--talk__ul__li--normal:hover {
+  background: #ccc;
 }
 .friend
   .friend__div--talk

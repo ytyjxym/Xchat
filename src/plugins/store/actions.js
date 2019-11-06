@@ -28,7 +28,7 @@ export default {
         data.append("username", payload.username);
         data.append("password", payload.password);
         data.append("icon", payload.file);
-        console.log(payload);
+        // console.log(payload);
 
         return axios({
             method: "post",
@@ -52,7 +52,7 @@ export default {
         data.append("oldPassword", payload.oldPassword);
         data.append("newPassword", payload.newPassword);
         data.append("icon", payload.file);
-        console.log(data);
+        // console.log(data);
 
         return axios({
             url: "/api/setUser",
@@ -64,5 +64,5 @@ export default {
             return res.data
 
         });
-    }
+    },
 }

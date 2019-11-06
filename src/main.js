@@ -10,6 +10,8 @@ import filters from './plugins/filters';
 import './plugins/axios'
 //图标
 import './assets/css/font.css'
+//animate.css
+import 'animate.css'
 //socket
 import './plugins/socket.io'
 Vue.config.productionTip = false;

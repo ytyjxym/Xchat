@@ -47,6 +47,7 @@ export default {
   
   components: {},
   computed:mapState(['own']),
+  
   methods: {
     showUser() {
       this.showUserInf = !this.showUserInf;
@@ -55,14 +56,19 @@ export default {
       this.select = "Msg";
     },
     choseSetting() {
+      console.log(this.$socket);
       this.select = "Setting";
     },
     logout() {
       axios({
         url: "api/logout"
       }).then(res => {       
-        window.localStorage.removeItem('xChat__own')
-        this.$router.push("/login");
+        window.localStorage.removeItem('xChat__own');
+      //   this.$socket.connected = false;
+      //   this.$socket.disconnected = true;
+      // console.log(this.$socket);
+
+        this.$router.go("/login");
       });
     }
   },

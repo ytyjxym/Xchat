@@ -1,3 +1,5 @@
 export default {
-    baseUrl: 'http://localhost:3000'
+    baseUrl: 'http://47.103.201.65:80'
+        // baseUrl: 'http://localhost:80'
+
 }

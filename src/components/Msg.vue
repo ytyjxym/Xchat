@@ -1,16 +1,20 @@
 <template>
   <div class="msg .container">
+    <!-- <transition> -->
+    <!-- <div class="home__div--userEnter" v-show="userEnterMsg">{{userEnterMsg}}</div> -->
+    <!-- </transition> -->
     <div class="col-3 content__div--left">
       <div class="content__div--left--top">
         <Search @SearchInf="getSearchInf"></Search>
       </div>
       <div class="content__div--left--bottom">
-        <Friend :name="own.data.name" :userList="userList"></Friend>
+        <Friend :name="own.data.name" :userList="userList" :search="search"></Friend>
       </div>
     </div>
     <div class="col-9 content__div--right">
       <div class="msg__div--head">
-        <h3>在线人数（{{userList.length}}人）</h3>
+        <h3 v-if="multi">在线人数（{{userList.length}}人）</h3>
+        <h3 v-else>{{selectFriend.name}}</h3>
       </div>
       <div class="msg__div--talk" style="overflow:auto" ref="setScroll">
         <ul>
@@ -50,13 +54,14 @@ import { mapState } from "vuex";
 import store from "../plugins/store";
 import Friend from "./Friend";
 import Search from "./childComponents/Search";
+import { log } from "util";
 export default {
   name: "msg",
   // props: ["friendId", "name", "icon", "id"],
   data() {
     return {
       sendMsg: "",
-      seach: "",
+      search: "",
       msgList: [],
       userList: []
     };
@@ -66,7 +71,7 @@ export default {
     Friend
   },
   // computed: mapState(["own",'msgList','userList']),
-  computed: mapState(["own"]),
+  computed: mapState(["own", "multi", "selectFriend", "userEnterMsg"]),
 
   sockets: {
     connect: function(data) {
@@ -75,6 +80,10 @@ export default {
     msg(data) {
       data.key = this.msgList.length + 1;
       this.msgList.push(data);
+      window.localStorage.setItem(
+        "xchatMsgHistroy",
+        JSON.stringify(this.msgList)
+      );
       setTimeout(() => {
         this.$refs.setScroll.scrollTop =
           this.$refs.setScroll.scrollHeight - this.$refs.setScroll.clientHeight;
@@ -86,14 +95,22 @@ export default {
     disconnect() {
       this.$socket.emit("delUser", this.own.data._id);
     },
-    userEnter(data){
-      console.log(data);
-      
+    userLogout(data) {
+      this.$store.commit("USERENTERSHOW", data);
+      setTimeout(() => {
+        this.$store.commit("USERENTERHIDDEN");
+      }, 1000);
+    },
+    userEnter(data) {
+      this.$store.commit("USERENTERSHOW", data);
+      setTimeout(() => {
+        this.$store.commit("USERENTERHIDDEN");
+      }, 1000);
     }
   },
   methods: {
     getSearchInf(data) {
-      this.seach = data;
+      this.search = data;
     },
     sendToFriend(e) {
       // this.$socket.on("news", data => {
@@ -103,7 +120,6 @@ export default {
       // console.log(e.target.parentNode.parentNode.children[1].scrollHeight);
       // console.log(e.target.parentNode.parentNode.children[1].clientHeight);
       // console.log(e.target.parentNode.parentNode.children[1].children[0].clientHeight);
-
       if (this.sendMsg) {
         this.$socket.emit("msg", {
           msg: this.sendMsg.trim(),
@@ -140,7 +156,9 @@ export default {
     // });
   },
   activated() {
-    
+    this.msgList = JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+      ? JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+      : [];
     this.$socket.emit("userLogin", {
       name: this.own.data.name,
       icon: this.own.data.icon,
@@ -148,6 +166,9 @@ export default {
     });
   },
   created() {
+    this.msgList = JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+      ? JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+      : [];
     this.$socket.emit("userLogin", {
       name: this.own.data.name,
       icon: this.own.data.icon,
@@ -157,6 +178,19 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.home__div--userEnter {
+  width: 200px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 16px;
+  border: 1px solid #eee;
+  box-shadow: 0 0 5px;
+  border-radius: 5px;
+  background: #fff;
+  position: fixed;
+  left: 10%;
+  top: 5%;
+}
 .content__div--left {
   background: #ccc;
   padding: 0;
@@ -247,6 +281,7 @@ export default {
 //自己消息Style
 .msg .msg__div--talk ul li .msg__div--talk__ul__li__div--photo-right {
   float: right;
+  margin-left: 10px;
 }
 .msg .msg__div--talk ul li .msg__div--talk__ul__li__div--content-right {
   float: right;

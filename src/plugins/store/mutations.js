@@ -7,5 +7,15 @@ export default {
     },
     RESET(state, payload) {
         state.own = payload
+    },
+    USERENTERSHOW(state, payload) {
+        state.view_userEnter = true;
+        state.alertMsg = payload;
+    },
+    USERENTERHIDDEN(state) {
+        state.view_userEnter = false;
+    },
+    TO_MULTI_CHAT(state) {
+        state.multi = true;
     }
 }

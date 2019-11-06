@@ -6,8 +6,8 @@
       </div>
       <div class="regist__div--userPhoto text-center">
         <label for="regist__div--userPhoto--file">
-          <img :src="userPhoto" width="60" height="60" v-show="userPhoto" style="border-radius:50%" />
-          <span v-show="!userPhoto" style="cursor:pointer">点击上传头像</span>
+          <img title='点击上传头像' :src="userPhoto" width="60" height="60" v-if="userPhoto" style="border-radius:50%;cursor:pointer;" />
+          <img title='点击上传头像' src="../assets/img/noimage.png" width="60" height="60" v-else style="border-radius:50%;cursor:pointer;" />
         </label>
         <input
           type="file"
@@ -73,7 +73,7 @@
           <router-link to="/login" style="color:rgb(13, 165, 13)">登录</router-link>
         </label>
       </div>
-      <button class="btn btn-lg btn-success btn-block" type="button" @click="reg">注册</button>
+      <button class="btn btn-outline-success btn-block" type="button" @click="reg">注册</button>
     </form>
   </div>
 </template>
@@ -96,9 +96,11 @@ export default {
   },
   components: {},
   methods: {
-    choseUserPhoto(e) {
+    choseUserPhoto(e) {      
+      if(e.target.files[0]){
       this.userPhoto = window.URL.createObjectURL(e.target.files[0]);
       this.file = e.target.files[0];
+      }
     },
     reg() {
       if (this.name.trim() === "") {

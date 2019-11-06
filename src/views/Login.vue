@@ -38,7 +38,7 @@
           <router-link to="/regist" style="color:rgb(13, 165, 13)">注册</router-link>
         </label>
       </div>
-      <button class="btn btn-lg btn-success btn-block" type="button" @click="login">登录</button>
+      <button class="btn btn-outline-success btn-block" type="button" @click="login">登录</button>
     </form>
   </div>
 </template>
