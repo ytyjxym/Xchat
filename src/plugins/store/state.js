@@ -6,6 +6,8 @@ export default {
     },
     loginMsg: {},
     multi: true,
+    single: '',
+    p2pMsgList: [],
     selectFriend: null,
     view_userEnter: '',
     alertMsg: '',

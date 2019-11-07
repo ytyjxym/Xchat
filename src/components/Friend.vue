@@ -38,7 +38,7 @@
           </li>
           <li
             class="clearfix"
-            @click="toSingalChat(item.id)"
+            @click="toSingleChat(item.id)"
             v-for="item of userList"
             v-show='search ? item.name.includes(search) : true'
             :key="item.id"
@@ -58,20 +58,24 @@
 </template>
 <script>
 // @ is an alias to /src
-
+import { mapState } from 'vuex'
 export default {
   name: "friend",
-  props: ["name", "userList",'search'],
+  props: ["name",'search'],
   data() {
     return {};
   },
   components: {},
+  computed:mapState(['userList']),
   methods: {
     toMultiChat() {
-      this.$store.commit('TO_MULTI_CHAT')
+      this.$store.commit('TO_MULTI_CHAT');
     },
-    toSingalChat() {
-      this.$emit("getFriend", Math.random());
+    toSingleChat(id) {   
+       
+      this.$store.commit('TO_SINGLE_CHAT',id);
+      this.$store.dispatch("P2P_MSG_INIT",id);
+      // this.$emit("getFriend", Math.random());
     }
   },
   mounted() {}

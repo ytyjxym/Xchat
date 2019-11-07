@@ -14,11 +14,31 @@
     <div class="col-9 content__div--right">
       <div class="msg__div--head">
         <h3 v-if="multi">在线人数（{{userList.length}}人）</h3>
-        <h3 v-else>{{selectFriend.name}}</h3>
+        <h3 v-else>{{userList.find(user => user.id === single).name}}</h3>
       </div>
       <div class="msg__div--talk" style="overflow:auto" ref="setScroll">
-        <ul>
+        <ul v-if="multi">
+        <!-- <ul> -->
           <li class="clearfix" v-for="item of msgList" :key="item.key">
+            <div
+              :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--photo-right' :'msg__div--talk__ul__li__div--photo'"
+            >
+              <img :src="baseUrl + item.icon" width="40" height="40" />
+            </div>
+            <div
+              :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content-right' :'msg__div--talk__ul__li__div--content'"
+            >
+              <div
+                :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content__div--name-right' :'msg__div--talk__ul__li__div--content__div--name'"
+              >{{item.name}}</div>
+              <div
+                :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--content__div--msg-right' :'msg__div--talk__ul__li__div--content__div--msg'"
+              >{{item.msg}}</div>
+            </div>
+          </li>
+        </ul>
+        <ul v-else>
+          <li class="clearfix" v-for="item of p2pMsgList" :key="item.key">
             <div
               :class="item.id === own.data._id ? 'msg__div--talk__ul__li__div--photo-right' :'msg__div--talk__ul__li__div--photo'"
             >
@@ -54,16 +74,15 @@ import { mapState } from "vuex";
 import store from "../plugins/store";
 import Friend from "./Friend";
 import Search from "./childComponents/Search";
-import { log } from "util";
 export default {
   name: "msg",
   // props: ["friendId", "name", "icon", "id"],
   data() {
     return {
       sendMsg: "",
-      search: "",
-      msgList: [],
-      userList: []
+      search: ""
+      // msgList: [],
+      // userList: []
     };
   },
   components: {
@@ -71,26 +90,37 @@ export default {
     Friend
   },
   // computed: mapState(["own",'msgList','userList']),
-  computed: mapState(["own", "multi", "selectFriend", "userEnterMsg"]),
+  computed: mapState([
+    "own",
+    "multi",
+    "selectFriend",
+    "userEnterMsg",
+    "userList",
+    "single",
+    "msgList",
+    "p2pMsgList"
+  ]),
 
   sockets: {
     connect: function(data) {
       console.log("已连接聊天室");
     },
     msg(data) {
-      data.key = this.msgList.length + 1;
-      this.msgList.push(data);
-      window.localStorage.setItem(
-        "xchatMsgHistroy",
-        JSON.stringify(this.msgList)
-      );
+      this.$store.dispatch("MSGLIST_UPDATA", data);
+      // data.key = this.msgList.length + 1;
+      // this.msgList.push(data);
+      // window.localStorage.setItem(
+      //   "xchatMsgHistroy",
+      //   JSON.stringify(this.msgList)
+      // );
       setTimeout(() => {
         this.$refs.setScroll.scrollTop =
           this.$refs.setScroll.scrollHeight - this.$refs.setScroll.clientHeight;
       }, 0);
     },
     user(userList) {
-      this.userList = userList;
+      this.$store.commit("USERLIST_UPDATE", userList);
+      // this.userList = userList;
     },
     disconnect() {
       this.$socket.emit("delUser", this.own.data._id);
@@ -106,6 +136,9 @@ export default {
       setTimeout(() => {
         this.$store.commit("USERENTERHIDDEN");
       }, 1000);
+    },
+    p2pMsg(data){    
+      this.$store.dispatch('P2P_MSG',data);
     }
   },
   methods: {
@@ -120,13 +153,24 @@ export default {
       // console.log(e.target.parentNode.parentNode.children[1].scrollHeight);
       // console.log(e.target.parentNode.parentNode.children[1].clientHeight);
       // console.log(e.target.parentNode.parentNode.children[1].children[0].clientHeight);
+
       if (this.sendMsg) {
-        this.$socket.emit("msg", {
-          msg: this.sendMsg.trim(),
-          name: this.own.data.name,
-          icon: this.own.data.icon,
-          id: this.own.data._id
-        });
+        if (this.multi) {
+          this.$socket.emit("msg", {
+            msg: this.sendMsg.trim(),
+            name: this.own.data.name,
+            icon: this.own.data.icon,
+            id: this.own.data._id
+          });
+        }else{
+          this.$socket.emit("p2pMsg", {
+            msg: this.sendMsg.trim(),
+            name: this.own.data.name,
+            icon: this.own.data.icon,
+            from: this.own.data._id,
+            to:this.single
+          });
+        }
       } else {
         return false;
       }
@@ -156,9 +200,8 @@ export default {
     // });
   },
   activated() {
-    this.msgList = JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
-      ? JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
-      : [];
+    this.$store.dispatch("MSGLIST_INIT");
+
     this.$socket.emit("userLogin", {
       name: this.own.data.name,
       icon: this.own.data.icon,
@@ -166,9 +209,10 @@ export default {
     });
   },
   created() {
-    this.msgList = JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
-      ? JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
-      : [];
+    this.$store.dispatch("MSGLIST_INIT");
+    // this.msgList = JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+    //   ? JSON.parse(window.localStorage.getItem("xchatMsgHistroy"))
+    //   : [];
     this.$socket.emit("userLogin", {
       name: this.own.data.name,
       icon: this.own.data.icon,
@@ -343,9 +387,9 @@ export default {
   z-index: 100;
   color: #000;
   cursor: pointer;
-  padding: 3px 8px;
-  line-height: 20px;
-  font-size: 16px;
+  padding: 5px 15px;
+  line-height: 22px;
+  font-size: 18px;
   background: #cfcfcf;
 }
 .msg .msg__div--send .msg__div--send--sendBtn:hover {
