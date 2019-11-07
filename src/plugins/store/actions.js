@@ -100,7 +100,7 @@ export default {
         if (state.own.data._id === payload.from) {
             let data = payload;
             data.key = state.p2pMsgList.length + 1;
-            data.id = payload.to;
+            data.id = payload.from;
             let newP2pMsgList = [...state.p2pMsgList]
             newP2pMsgList.push(data);
             // console.log(payload.to, newP2pMsgList, 'to');
