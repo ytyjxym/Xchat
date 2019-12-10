@@ -19,6 +19,7 @@ npm run build
 See [Configuration Reference](https://cli.vuejs.org/config/). -->
 ## xchat
 多人聊天室测试版源码，暂时仅有多人聊天,点对点聊天及登录注册功能
+地址http://47.103.201.65
 
 ## 后续未更新内容
 添加好友功能
